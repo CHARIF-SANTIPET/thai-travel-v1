@@ -3,7 +3,7 @@ from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
 
-from ..models.user import User
+# from ..models.user import User
 
 SECRET_KEY = "your-secret-key"
 ALGORITHM = "HS256"

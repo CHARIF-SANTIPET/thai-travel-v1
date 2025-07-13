@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from ...auth.authentication import oauth2_scheme, get_current_user, create_access_token
-from ...models.user import User
+# from ...models.user import User
 from ...data.user import users_db
 
 rounter = APIRouter(tags=["authentication"])
