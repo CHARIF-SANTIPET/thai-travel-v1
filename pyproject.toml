@@ -14,7 +14,8 @@ dependencies = [
     "python-multipart (>=0.0.20,<0.0.21)",
     "pydantic[email] (>=2.11.7,<3.0.0)",
     "sqlalchemy (>=2.0.41,<3.0.0)",
-    "dotenv (>=0.9.9,<0.10.0)"
+    "dotenv (>=0.9.9,<0.10.0)",
+    "tzdata (>=2025.2,<2026.0)"
 ]
 
 
