@@ -1,41 +1,46 @@
-# from pydantic import BaseModel, Field, root_validator
-# from .schemas.user_schema import UserResponse
+from pydantic import BaseModel, Field, model_validator, root_validator
+from ..schemas.province_schema import ProvinceResponse
 
-# from datetime import date
-# from typing import Optional
-# import decimal
+from datetime import date
+from typing import Optional
+import decimal
+
+from enum import Enum
+
+class BookingStatus(str, Enum):
+    confirmed = "confirmed"
+    in_use = "in_use"
+    cancelled = "cancelled"
+
+class BookingBase(BaseModel):
+    user_id: int = Field(..., gt=0)
+    province_id: int = Field(..., gt=0)
+    # booking_price: decimal.Decimal = Field(..., gt=0, description="Booking price in THB")
+    checkin_date: date
+    checkout_date: date
+    status: BookingStatus = Field(default=BookingStatus.confirmed, description="Booking status")
+
+    @model_validator(mode="after")
+    def check_dates(self):
+        if self.checkout_date <= self.checkin_date:
+            raise ValueError("checkout_date ต้องอยู่หลัง checkin_date")
+        return self
 
 
-# class BookingBase(BaseModel):
-#     user_id: int = Field(..., gt=0)
-#     province_id: int = Field(..., gt=0)
-#     accommodation_id: int = Optional(gt=0, default=None)
-#     booking_price: decimal.Decimal = Field(..., gt=0, description="Booking price in THB")
-#     checkin_date: date
-#     checkout_date: date
-#     status: str = Field(..., min_length=3, max_length=20)
+class BookingCreate(BookingBase):
+    pass
 
-#     @root_validator
-#     def check_dates(cls, values):
-#         checkin = values.get("checkin_date")
-#         checkout = values.get("checkout_date")
-#         if checkin and checkout and checkout <= checkin:
-#             raise ValueError("checkout_date ต้องอยู่หลัง checkin_date")
-#         return values
+class BookingResponse(BookingBase):
+    id: int
+    booking_price: decimal.Decimal = Field(..., gt=0, description="Booking price in THB")
+
+    class Config:
+        from_attributes = True
+
+class BookingWithProvince(BookingResponse):
+    province: ProvinceResponse
+
+    class Config:
+        from_attributes = True
 
 
-# class BookingCreate(BookingBase):
-    
-#     pass
-
-# class BookingResponse(BookingBase):
-#     id: int
-
-#     class Config:
-#         orm_mode = True
-
-# class BookingWithUser(BookingResponse):
-#     user: UserResponse
-
-#     class Config:
-#         orm_mode = True
